@@ -98,6 +98,17 @@
     color: var(--red); font-weight: 700; display: none;
   }
   .err p { margin: 6px 0 0; color: var(--ink); font-weight: 500; }
+  .debt { border: 2px solid var(--red); }
+  .who { display: flex; justify-content: space-between; gap: 10px; padding: 12px 0; border-top: 1px solid var(--line); margin-top: 12px; }
+  .who b { display: block; font-size: 17px; }
+  .who span { color: var(--muted); font-size: 13px; }
+  .phone { font-size: 18px; font-weight: 800; white-space: nowrap; text-align: right; }
+  .pay { background: var(--red); }
+  .ghost { background: transparent; color: var(--ink); border: 1px solid var(--line); font-size: 16px; margin-top: 10px; }
+  .msg { margin-top: 12px; padding: 14px; border-radius: 14px; background: var(--bg); display: none; font-size: 15px; }
+  .msg ol { margin: 6px 0 0; padding-left: 20px; }
+  .alt li { margin: 8px 0; }
+  .alt s { color: var(--muted); }
 </style>
 </head>
 <body>
@@ -147,6 +158,40 @@
     </ul>
   </div>
 
+  <div class="card debt">
+    <div class="label">🤝 Спор на 5 000 ₽</div>
+    <div class="big">5 000 ₽</div>
+    <div class="label" style="margin-top:8px">Условие: не сдал в этом году — переводишь брату. Судя по картинке, пора.</div>
+    <div class="who">
+      <div><b>Евгений Б.</b><span>по номеру телефона, СБП, любой банк</span></div>
+      <div class="phone" id="phone">+7 ··· ··· ·· ··</div>
+    </div>
+    <button class="pay" id="pay">Перевести 5 000 ₽</button>
+    <div class="msg" id="payMsg">
+      <b>Номер скопирован ✅</b>
+      <ol>
+        <li>Открой свой банк</li>
+        <li>«Перевод по номеру телефона»</li>
+        <li>Вставь номер, банк получателя выбери из списка</li>
+        <li>Сумма 5 000 ₽, комментарий «не сдал»</li>
+      </ol>
+    </div>
+    <button class="ghost" id="loan">Нет денег? Взять кредит</button>
+    <div class="msg" id="loanMsg">
+      <b>⛔ Отказано.</b> Кредитная история пустая — как графа «Водительское удостоверение».
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="label">Другие способы расплатиться</div>
+    <ul class="alt">
+      <li>🥙 10 шаурм с доставкой</li>
+      <li>🧽 Месяц мыть посуду за брата</li>
+      <li><s>🚗 Месяц возить брата на машине</s> — недоступно, см. выше</li>
+      <li>🙇 Публично признать: «брат был прав»</li>
+    </ul>
+  </div>
+
   <div class="card">
     <div class="label">🚌 Его новый транспорт: автобусы Казани</div>
     <table>
@@ -179,6 +224,24 @@
   document.getElementById('rent').onclick = function () {
     document.getElementById('err').style.display = 'block';
     this.textContent = 'Нельзя 🙅';
+  };
+  var num = atob('Nzk5OTE2NDAzNTA=');
+  document.getElementById('phone').textContent =
+    '+' + num[0] + ' ' + num.slice(1,4) + ' ' + num.slice(4,7) + '-' + num.slice(7,9) + '-' + num.slice(9);
+  function copy(text) {
+    if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(text).catch(fallback);
+    fallback();
+    function fallback() {
+      var a = document.createElement('textarea'); a.value = text; a.style.position = 'fixed'; a.style.opacity = '0';
+      document.body.appendChild(a); a.select(); try { document.execCommand('copy'); } catch (e) {} a.remove();
+    }
+  }
+  document.getElementById('pay').onclick = function () {
+    copy('+' + num);
+    document.getElementById('payMsg').style.display = 'block';
+  };
+  document.getElementById('loan').onclick = function () {
+    document.getElementById('loanMsg').style.display = 'block';
   };
   var n = 0;
   document.getElementById('btn').onclick = function () {
